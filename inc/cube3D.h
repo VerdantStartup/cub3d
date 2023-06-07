@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3D.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: verdant <verdant@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 14:31:41 by verdant           #+#    #+#             */
-/*   Updated: 2023/05/29 15:12:57 by verdant          ###   ########.fr       */
+/*   Updated: 2023/06/07 16:24:01 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct s_mlxVars
 	mlx_t				*mlx;
 	mlx_image_t	*img;
 	mlx_image_t	*minimap_img;
+	mlx_image_t	*texture_img;
 } t_mlxVars;
 
 /**
@@ -123,6 +124,13 @@ typedef struct data_s
 	uint32_t	floor_color;
 	double		move_speed;
 	double		rot_speed;
+
+
+
+	int texWidth;
+	int texHeight;
+
+
 } t_data;
 
 

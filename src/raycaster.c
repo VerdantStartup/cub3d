@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycaster.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: verdant <verdant@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 16:41:43 by verdant           #+#    #+#             */
-/*   Updated: 2023/06/07 11:02:40 by verdant          ###   ########.fr       */
+/*   Updated: 2023/06/07 16:27:32 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ void	scan_grid_lines(t_ray *ray, t_data *data)
 		ray->perp_wall_dist = (ray->side_dist_y - ray->delta_dist_y);
 }
 
+
+
 void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 {
 	const int	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
@@ -96,13 +98,62 @@ void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 	int	cube_start;
 	int	floor_start;
 	
+
+	t_player player = data->player;
+	t_mlxVars mlxV = data->mlxVars;
+
+
 	celling_start = 0;
 	cube_start = half_screen_height - line_height / 2;
 	if (cube_start < 0)
 		cube_start = 0;
 	floor_start = half_screen_height + line_height / 2;
+	if (floor_start >= SCREEN_HEIGHT)
+		floor_start = SCREEN_HEIGHT - 1;
+	
+	// Draw the ceiling
+	while (celling_start < cube_start)
+		mlx_put_pixel(img, num_ray, celling_start++, data->celling_color);
+	
+
+
+
+
+	double wall_x;
+	if (ray->side == HORIZONTAL)
+		wall_x = player.y_grid + ray->perp_wall_dist * ray->ray_dir_y;
+	else
+		wall_x = player.x_grid + ray->perp_wall_dist * ray->ray_dir_x;
+	wall_x -= floor(wall_x);
+
+	int texX = (int)(wall_x * (double)data->texWidth);
+	if (ray->side == HORIZONTAL && ray->ray_dir_x > 0)
+		texX = data->texWidth - texX - 1;
+	if (ray->side == VERTICAL && ray->ray_dir_y < 0)
+		texX = data->texWidth - texX - 1;
+	
+
+	double step = 1.0 * data->texHeight / line_height;
+	double texPos = (cube_start - SCREEN_HEIGHT / 2 + line_height / 2) * step;
+
+
+
 
 	
+	for (int y = cube_start; y < floor_start; y++)
+	{
+		int texY = (int)texPos & (data->texHeight - 1);
+		texPos += step;
+		uint8_t *pixelData = mlxV.texture_img->pixels;
+		uint32_t color = data->texWidth;
+		color = pixelData[texY * data->texWidth + texX];
+		mlx_put_pixel(img, num_ray, y, color);
+	}
+
+
+	// Draw the floor
+	while (floor_start < SCREEN_HEIGHT)
+		mlx_put_pixel(img, num_ray, floor_start++, data->floor_color);	
 }
 // void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 // {
