@@ -4,7 +4,7 @@ MLX42    := lib/MLX42/build/libmlx42.a
 SRC_DIR := src/
 OBJ_DIR := obj/
 CC 		:= gcc
-CFLAGS := -Wunreachable-code -Ofast -Wall -Wextra -Werror
+CFLAGS := -Wunreachable-code -Ofast # -Wall -Wextra -Werror
 LIBPATH  := -lglfw -L/opt/homebrew/opt/glfw/lib 
 MLXFLAGS := $(MLX42) -framework Cocoa -framework OpenGL -framework IOKit $(LIBPATH)
 INC      := -I inc/ -I lib/MLX42/include
@@ -29,7 +29,7 @@ $(TARGET): $(OBJ) $(LIBFT) $(MLX42)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c inc/cube3D.h
 	@mkdir -p $(OBJ_DIR)
-	@$(CC) $(CCFLAGS) $(INC) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(LIBFT):
 	@echo "$(GREEN)Building libft ...$(RESET)"
