@@ -6,11 +6,11 @@
 /*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 16:41:43 by verdant           #+#    #+#             */
-/*   Updated: 2023/06/07 16:27:32 by mwilsch          ###   ########.fr       */
+/*   Updated: 2023/06/09 15:43:48 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3D.h"
+#include "raycaster.h"
 
 void draw_line(mlx_image_t* image, int x1, int y1, int x2, int y2, uint32_t color)
 {
@@ -63,7 +63,7 @@ void	init_dda_vars(t_ray *ray, t_player *player)
 	}
 }
 
-void	scan_grid_lines(t_ray *ray, t_data *data)
+void	scan_grid_lines(t_ray *ray, t_all *data)
 {
 	while (ray->hit == false)
 	{
@@ -88,9 +88,7 @@ void	scan_grid_lines(t_ray *ray, t_data *data)
 		ray->perp_wall_dist = (ray->side_dist_y - ray->delta_dist_y);
 }
 
-
-
-void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
+void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_all *data, int num_ray)
 {
 	const int	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
 	const	int	half_screen_height = SCREEN_HEIGHT / 2;
@@ -98,10 +96,7 @@ void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 	int	cube_start;
 	int	floor_start;
 	
-
 	t_player player = data->player;
-	t_mlxVars mlxV = data->mlxVars;
-
 
 	celling_start = 0;
 	cube_start = half_screen_height - line_height / 2;
@@ -110,13 +105,13 @@ void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 	floor_start = half_screen_height + line_height / 2;
 	if (floor_start >= SCREEN_HEIGHT)
 		floor_start = SCREEN_HEIGHT - 1;
-	
+
+	data->texWidth = data->mlxVars.texture_img->width;
+	data->texHeight = data->mlxVars.texture_img->height;
+
 	// Draw the ceiling
 	while (celling_start < cube_start)
 		mlx_put_pixel(img, num_ray, celling_start++, data->celling_color);
-	
-
-
 
 
 	double wall_x;
@@ -138,45 +133,49 @@ void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
 
 
 
+		uint32_t* pixels = (uint32_t *)data->mlxVars.texture_img->pixels;
+for (int y = cube_start; y < floor_start; y++)
+{
+    int texY = (int)texPos & (data->texHeight - 1);
+    texPos += step;
+    uint32_t 	color = pixels[data->texWidth * texY + texX];
+		uint32_t	end =((color >> 24) & 0xff)
+		| ((color << 8) & 0xff0000)
+		| ((color >> 8) & 0xff00)
+		| ((color << 24) & 0xff000000);
+    mlx_put_pixel(img, num_ray, y, color);
+}
 
-	
-	for (int y = cube_start; y < floor_start; y++)
-	{
-		int texY = (int)texPos & (data->texHeight - 1);
-		texPos += step;
-		uint8_t *pixelData = mlxV.texture_img->pixels;
-		uint32_t color = data->texWidth;
-		color = pixelData[texY * data->texWidth + texX];
-		mlx_put_pixel(img, num_ray, y, color);
-	}
+
 
 
 	// Draw the floor
 	while (floor_start < SCREEN_HEIGHT)
+		mlx_put_pixel(img, num_ray, floor_start++, data->floor_color);
+}
+
+void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_all *data, int num_ray)
+{
+	const int	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
+	const	int	half_screen_height = SCREEN_HEIGHT / 2;
+	int	celling_start;
+	int	cube_start;
+	int	floor_start;
+	
+	celling_start = 0;
+	cube_start = half_screen_height - line_height / 2;
+	if (cube_start < 0)
+		cube_start = 0;
+	floor_start = half_screen_height + line_height / 2;
+	if (floor_start >= SCREEN_HEIGHT)
+		floor_start = SCREEN_HEIGHT - 1;
+	while (celling_start < cube_start)
+		mlx_put_pixel(img, num_ray, celling_start++, data->celling_color);
+	while (cube_start < floor_start)
+		mlx_put_pixel(img, num_ray, cube_start++, data->cube_color);
+	while (floor_start < SCREEN_HEIGHT)
 		mlx_put_pixel(img, num_ray, floor_start++, data->floor_color);	
 }
-// void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
-// {
-// 	const int	line_height = (int)(SCREEN_HEIGHT / ray->perp_wall_dist);
-// 	const	int	half_screen_height = SCREEN_HEIGHT / 2;
-// 	int	celling_start;
-// 	int	cube_start;
-// 	int	floor_start;
-	
-// 	celling_start = 0;
-// 	cube_start = half_screen_height - line_height / 2;
-// 	if (cube_start < 0)
-// 		cube_start = 0;
-// 	floor_start = half_screen_height + line_height / 2;
-// 	// if (floor_start >= SCREEN_HEIGHT)
-// 	// 	floor_start = SCREEN_HEIGHT - 1;
-// 	// while (celling_start < cube_start)
-// 	// 	mlx_put_pixel(img, num_ray, celling_start++, data->celling_color);
-// 	// while (cube_start < floor_start)
-// 	// 	mlx_put_pixel(img, num_ray, cube_start++, data->cube_color);
-// 	// while (floor_start < SCREEN_HEIGHT)
-// 	// 	mlx_put_pixel(img, num_ray, floor_start++, data->floor_color);	
-// }
 
 /**
  * @brief 
@@ -191,7 +190,7 @@ void	draw_3D_on_screen(t_ray *ray, mlx_image_t *img, t_data *data, int num_ray)
  * 
  * @note delta Dis is calculated using the Pytagorem Therom and the Thales theoreom
  */
-void	cast_rays(t_data *data, t_ray *ray, t_player *player)
+void	cast_rays(t_all *data, t_ray *ray, t_player *player)
 {
 	int						num_ray;
 	
@@ -208,7 +207,7 @@ void	cast_rays(t_data *data, t_ray *ray, t_player *player)
 		ray->map_y = (int)player->y_grid;
 		init_dda_vars(ray, player);
 		scan_grid_lines(ray, data);
-		draw_line(data->mlxVars.minimap_img, player->x_grid * CELL_SIZE, player->y_grid * CELL_SIZE, (player->x_grid * CELL_SIZE) + (ray->ray_dir_x * (ray->perp_wall_dist * CELL_SIZE)), (player->y_grid * CELL_SIZE) + (ray->ray_dir_y * (CELL_SIZE * ray->perp_wall_dist)), 0x00FF00FF);
+		// draw_line(data->mlxVars.minimap_img, player->x_grid * CELL_SIZE, player->y_grid * CELL_SIZE, (player->x_grid * CELL_SIZE) + (ray->ray_dir_x * (ray->perp_wall_dist * CELL_SIZE)), (player->y_grid * CELL_SIZE) + (ray->ray_dir_y * (CELL_SIZE * ray->perp_wall_dist)), 0x00FF00FF);
 		draw_3D_on_screen(ray, data->mlxVars.img, data, num_ray);
 		num_ray++;
 	}

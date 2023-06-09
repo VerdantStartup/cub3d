@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   draw_2D.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: verdant <verdant@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/22 15:16:29 by verdant           #+#    #+#             */
-/*   Updated: 2023/05/29 15:29:39 by verdant          ###   ########.fr       */
+/*   Updated: 2023/06/09 15:43:48 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3D.h"
+#include "raycaster.h"
 
 void	draw_minimap_cell(int idx, t_mlxVars *mlxVars, int x_pixel, int y_pixel)
 {
@@ -56,7 +56,7 @@ void draw_screen_player(t_mlxVars *mlxVars, t_player *p, uint32_t color)
 	}
 }
 
-void	draw_minimap(t_data *data)
+void	draw_minimap(t_all *data)
 {
 	int	x_grid;
 	int	y_grid;

@@ -11,7 +11,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3D.h"
+#include "raycaster.h"
 
 int grid[GRID_HEIGHT][GRID_WIDTH] = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -43,7 +43,7 @@ bool	init_mlx42(t_mlxVars *mlxVars)
 }
 
 // Refactor this as soon as I have the parser
-void	init_player(t_data *data, int xDraw, int yDraw, int dir)
+void	init_player(t_all *data, int xDraw, int yDraw, int dir)
 {
 	const 		double 	arr_FOV[4] = {0.66, -0.66, 0.66, -0.66};
 	const 		double arr[4] = {-1, 1, 1, -1};
@@ -116,23 +116,33 @@ bool init_textures(void)
 	return (true);
 }
 
+bool	init_map(t_map *map)
+{
+	t_info *info 
+	return (true);
+}
+
 // Refactor grid variable this as soon as I have the parser from my partner
-bool init_structs(t_data *data)
+bool init_structs(t_all *data)
 {
 	t_mlxVars	mlxVars;
 	t_ray			ray_vars;
-	// t_map			map;
+	t_map			map;
 
-	if (!init_mlx42(&mlxVars) || !init_raycaster(&ray_vars))
+	if (!init_mlx42(&mlxVars))
 		return (false);
 	data->mlxVars = mlxVars;
+	if (!init_map(map))
+		return (false);
+	data.map_vars = map;
+	if (!init_raycaster(&ray_vars))
+		return (false);
 	data->ray = ray_vars;
-	// if (!init_textures(void))
 	ft_memcpy(data->world_grid, grid, sizeof(grid));
 	data->player_drawn = false;
-	data->celling_color = 0x00000000;
+	data->celling_color = 0xFF0000FF;
 	data->cube_color = 0xFFFF00FF;
-	data->floor_color = 0xFF0000FF;
+	data->floor_color = 0xFF00FFFF;
 	data->move_speed = 0.1;
 	data->rot_speed = 0.1;
 	return (true);

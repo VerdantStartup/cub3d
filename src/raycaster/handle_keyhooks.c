@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   handle_keyhooks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: verdant <verdant@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 18:27:51 by verdant           #+#    #+#             */
-/*   Updated: 2023/05/29 15:14:49 by verdant          ###   ########.fr       */
+/*   Updated: 2023/06/09 15:43:48 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cube3D.h"
+#include "raycaster.h"
 
 /**
  * @brief 
@@ -146,6 +146,6 @@ void	key_hook(void* param)
 		rotate_player(player, ROTATE_LEFT,data->rot_speed, data);
 	if (mlx_is_key_down(mlxVars->mlx, MLX_KEY_RIGHT))
 		rotate_player(player, ROTATE_RIGHT,data->rot_speed, data);
-	draw_minimap(data);
+	// draw_minimap(data);
 	cast_rays(data, &data->ray, &data->player);
 }

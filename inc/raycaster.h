@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cube3D.h                                           :+:      :+:    :+:   */
+/*   raycaster.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mwilsch <mwilsch@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/21 14:31:41 by verdant           #+#    #+#             */
-/*   Updated: 2023/06/07 16:24:01 by mwilsch          ###   ########.fr       */
+/*   Updated: 2023/06/09 15:48:51 by mwilsch          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CUBE3D_H
-# define CUBE3D_H
+#ifndef RAYCASTER_H
+# define RAYCASTER_H
 
 # include <math.h>
 # include <stdio.h>
@@ -20,8 +20,9 @@
 # include "../lib/MLX42/include/MLX42/MLX42.h"
 # include "../lib/libft/include/libft.h"
 
-#define SCREEN_WIDTH 1440
-#define SCREEN_HEIGHT 900
+#define SCREEN_WIDTH 2560
+#define SCREEN_HEIGHT 1440
+#define BPP 4
 #define GRID_WIDTH 10
 #define GRID_HEIGHT 10
 #define CELL_SIZE 32
@@ -58,6 +59,7 @@ typedef enum e_side
 	HORIZONTAL,
 	VERTICAL
 } t_side;
+
 typedef struct s_mlxVars
 {
 	mlx_t				*mlx;
@@ -111,11 +113,18 @@ typedef struct s_ray
 	double		perp_wall_dist;
 } t_ray;
 
+// typedef struct s_map
+// {
+// 	t_info	*info;
+// 	char		**map;
+// } t_map;
+
 typedef struct data_s
 {
 	t_mlxVars	mlxVars;
 	t_player	player;
 	t_ray			ray;
+	// t_map			mapVars;
 	// Add all of this to t_map after the parser is done
 	int				world_grid[GRID_HEIGHT][GRID_WIDTH]; 
 	bool			player_drawn;
@@ -131,7 +140,7 @@ typedef struct data_s
 	int texHeight;
 
 
-} t_data;
+} t_all;
 
 
 
@@ -140,26 +149,26 @@ typedef struct data_s
 
 bool	init_mlx42(t_mlxVars *mlxVars);
 bool	init_raycaster(t_ray *ray);
-void	init_player(t_data *data, int xDraw, int yDraw, int direction);
-bool	init_structs(t_data *data);
+void	init_player(t_all *data, int xDraw, int yDraw, int direction);
+bool	init_structs(t_all *data);
 
 /*			Functions to draw stuff				*/
 
 void	draw_minimap_cell(int idx, t_mlxVars *mlxVars, int xDraw, int yDraw);
 void	draw_screen_player(t_mlxVars *mlxVars, t_player *p, uint32_t color);
-void	draw_minimap(t_data *data);
+void	draw_minimap(t_all *data);
 
 /*			Functions to handle events				*/
 
-bool	is_wall_in_world(t_player *player, int new_x, int new_y, t_data *data);
+bool	is_wall_in_world(t_player *player, int new_x, int new_y, t_all *data);
 void	key_hook(void* param);
 
 /*			Functions to cast Rays				*/
 
 void	draw_line(mlx_image_t* image, int x1, int y1, int x2, int y2, uint32_t color);
 void	init_dda_vars(t_ray *ray, t_player *player);
-void	scan_grid_lines(t_ray *ray, t_data *data);
-void	cast_rays(t_data *data, t_ray *ray, t_player *player);
+void	scan_grid_lines(t_ray *ray, t_all *data);
+void	cast_rays(t_all *data, t_ray *ray, t_player *player);
 
 /*			Main				*/
 
